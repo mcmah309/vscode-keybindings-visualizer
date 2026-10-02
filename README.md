@@ -14,13 +14,16 @@ The extension runs on the desktop UI side, including when connected to a remote 
 
 ## Explore shortcuts
 
-- Toggle Ctrl, Alt/Option, Shift, and Win/Cmd to select a layer, or choose one of the populated-layer buttons.
-- Click a key to highlight its shortcut and inspect command IDs, available titles, arguments, sources, and `when` conditions. Custom bindings have an amber accent; numbers indicate multiple candidates.
-- Switch between **All bindings** and **Custom only**, or search by command ID, title, or shortcut, such as `ctrl+w`.
-- Select a search result to highlight its keys and modifier layer. For chords such as `ctrl+k ctrl+c`, select the first stroke and then a continuation, or select the complete chord in search.
+- Toggle Ctrl, Alt/Option, Shift, and Win/Cmd to select a layer, or choose a populated layer from the **Layers** dropdown.
+- Click a key to highlight its shortcut and inspect command IDs, available titles, arguments, sources, and `when` conditions in the right-hand details pane. The compact keyboard stays visible at normal editor sizes; longer details scroll inside the sidebar. Small panes adapt the layout. Custom bindings have an amber accent; numbers indicate multiple candidates.
+- Switch between **All bindings** and **Custom only**, or use **Find a shortcut** to search by command ID, title, or shortcut, such as `ctrl+w`. Results appear in a dropdown while searching; selecting a result, pressing Escape, or moving focus outside search dismisses it.
+- Select a search result to highlight its keys and modifier layer. For chords such as `ctrl+k ctrl+c`, select the first stroke and then a continuation, select the complete chord in search, or press the strokes on your keyboard.
+- With the visualizer focused, press a shortcut to select it. The visualizer consumes shortcuts, including chords, instead of running their usual VS Code commands. Search fields retain normal typing and text editing, and Tab remains available for navigating controls.
 - Use **Profile** to select Default or a discovered named profile. Use **Choose file…** for another `keybindings.json` or a profile that was not discovered.
 
 Selection previews bindings; it never runs their commands. Candidate commands appear in precedence order. VS Code's editor context determines which conditional binding actually runs, so the visualizer does not claim a winner when context-dependent alternatives remain.
+
+Keyboard capture works for events delivered to VS Code. Shortcuts reserved by the operating system cannot be captured when the operating system does not deliver them to the application.
 
 The diagram always uses US QWERTY. Scan-code bindings map to physical positions on that diagram; character bindings may refer to different positions on a non-US keyboard. Bindings that cannot map to the diagram remain searchable.
 
@@ -76,6 +79,8 @@ Before release, check Windows, Linux, macOS, and a desktop remote workspace:
 
 - Open the panel and confirm defaults load without opening a JSON tab.
 - Select modifier combinations and a chord; verify highlighting, candidate details, search, and Custom only.
+- With the visualizer focused, press Ctrl+W, Ctrl+P, Ctrl+Shift+P, F5, and Ctrl+K Ctrl+C (using Cmd alternatives where appropriate). Verify selection without closing the panel, opening palettes, starting debugging, or executing the chord's command.
+- Type and edit a query, select a search result, and dismiss results with Escape or outside focus. Confirm Tab navigation and that only details need scrolling in a full-size view.
 - Switch between Default, a named profile, and a chosen file; verify inherited-profile labels and preview warnings.
 - Change, replace, delete, and recreate the selected custom file; confirm updates preserve UI state.
 - Edit without saving, enter invalid JSON, then fix it; verify preview status, last-valid data, and recovery.

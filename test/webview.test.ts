@@ -63,7 +63,7 @@ describe('interactive keyboard', () => {
   it('supports chord continuations and selecting the full sequence', () => {
     click('#modifier-ctrl');
     click('[data-key="k"]');
-    expect(root.querySelector('.chord-trail')?.textContent).toContain('Choose the next stroke');
+    expect(root.querySelector('.chord-trail')?.textContent).toContain('Next stroke');
     expect(root.querySelector('[data-key="c"] .key-command')?.textContent).toBe('Comment line');
     expect(root.querySelector('[data-key="w"]')?.classList.contains('bound')).toBe(false);
     click('[data-key="c"]');
@@ -151,6 +151,77 @@ describe('interactive keyboard', () => {
   });
 });
 
+describe('compact search and sidebar', () => {
+  it('keeps results hidden until searching and dismisses them after selection', () => {
+    expect(root.querySelector('.search-popup')).toBeNull();
+    expect(root.querySelector('.results-panel')).toBeNull();
+    query('close');
+    expect(root.querySelector('#shortcut-search')?.getAttribute('aria-expanded')).toBe('true');
+    expect(root.querySelectorAll('.search-result')).toHaveLength(2);
+    click('.search-result');
+    expect(root.querySelector('.search-popup')).toBeNull();
+    expect(document.activeElement).toBe(root);
+    expect(root.querySelector<HTMLInputElement>('#shortcut-search')?.value).toBe('close');
+    expect(root.querySelector('.workarea > .details-panel .binding-detail')).not.toBeNull();
+    expect(root.querySelector('.details-panel > .details-scroll')).not.toBeNull();
+  });
+  it('provides combobox navigation, Enter selection, and Escape dismissal', () => {
+    query('close');
+    let input = root.querySelector<HTMLInputElement>('#shortcut-search')!;
+    expect(input.getAttribute('role')).toBe('combobox');
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true }));
+    input = root.querySelector<HTMLInputElement>('#shortcut-search')!;
+    const activeId = input.getAttribute('aria-activedescendant')!;
+    expect(document.getElementById(activeId)?.getAttribute('aria-selected')).toBe('true');
+    expect(document.getElementById(activeId)?.textContent).toContain('Close editor');
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+    expect(root.querySelector('.selected-shortcut')?.textContent).toBe('Ctrl+W');
+    expect(root.querySelector('.search-popup')).toBeNull();
+    query('close');
+    root.querySelector<HTMLInputElement>('#shortcut-search')!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+    expect(root.querySelector('.search-popup')).toBeNull();
+    expect(root.querySelector('.selected-shortcut')?.textContent).toBe('Ctrl+W');
+  });
+  it('dismisses search on outside pointer action and keeps sidebar scroll across snapshots', () => {
+    click('#modifier-ctrl');
+    click('[data-key="w"]');
+    const details = root.querySelector<HTMLElement>('.details-scroll')!;
+    details.scrollTop = 75;
+    query('close');
+    root.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true }));
+    root.focus();
+    expect(root.querySelector('.search-popup')).toBeNull();
+    send();
+    expect(root.querySelector('.details-scroll')?.scrollTop).toBe(75);
+    expect(root.querySelector('.search-popup')).toBeNull();
+  });
+  it('closes search after focus leaves while preserving popup through snapshot focus restoration', async () => {
+    query('close');
+    send();
+    await Promise.resolve();
+    expect(document.activeElement?.id).toBe('shortcut-search');
+    expect(root.querySelector('.search-popup')).not.toBeNull();
+    root.querySelector<HTMLButtonElement>('#modifier-ctrl')!.focus();
+    await Promise.resolve();
+    expect(root.querySelector('.search-popup')).toBeNull();
+    expect(root.querySelector('#shortcut-search')?.getAttribute('aria-expanded')).toBe('false');
+    expect(root.querySelector('#shortcut-search')?.hasAttribute('aria-activedescendant')).toBe(false);
+    expect(root.querySelector<HTMLInputElement>('#shortcut-search')?.value).toBe('close');
+    root.querySelector<HTMLInputElement>('#shortcut-search')!.focus();
+    expect(root.querySelector('.search-popup')).not.toBeNull();
+  });
+  it('wires physical shortcut selection and chord continuation into the compact UI', () => {
+    root.focus();
+    root.dispatchEvent(new KeyboardEvent('keydown', { key: 'w', code: 'KeyW', ctrlKey: true, bubbles: true, cancelable: true }));
+    expect(root.querySelector('.selected-shortcut')?.textContent).toBe('Ctrl+W');
+    expect(root.querySelector('[data-key="w"]')?.getAttribute('aria-pressed')).toBe('true');
+    root.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', code: 'KeyK', ctrlKey: true, bubbles: true, cancelable: true }));
+    root.dispatchEvent(new KeyboardEvent('keydown', { key: 'c', code: 'KeyC', ctrlKey: true, bubbles: true, cancelable: true }));
+    expect(root.querySelector('.selected-shortcut')?.textContent).toBe('Ctrl+K → Ctrl+C');
+    expect(root.querySelector('.binding-detail h3')?.textContent).toBe('Comment line');
+  });
+});
+
 describe('host messaging and errors', () => {
   it('sends ready, profile, choose-file, and refresh without command execution', () => {
     expect(api.postMessage).toHaveBeenCalledWith({ type: 'ready' });
@@ -169,6 +240,7 @@ describe('host messaging and errors', () => {
     expect(root.querySelector('.notices')?.textContent).toContain('Custom bindings are still shown');
     Array.from(root.querySelectorAll<HTMLButtonElement>('button')).find(b => b.textContent === 'Retry')!.click();
     expect(api.postMessage).toHaveBeenCalledWith({ type: 'refresh' });
-    expect(root.querySelectorAll('.search-result')).toHaveLength(base.bindings.length);
+    query('Custom close');
+    expect(root.querySelector('.result-title')?.textContent).toBe('Custom close');
   });
 });

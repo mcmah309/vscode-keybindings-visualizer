@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1
+
+- Compact the keyboard and place shortcut details beside it, with independent scrolling.
+- Move populated layers into a Layers dropdown and show search results in a dismissible dropdown.
+- Capture physical shortcuts and chords while the visualizer is focused, selecting bindings without running their usual commands.
+- Preserve typing and text editing in search fields and Tab navigation between controls. Operating-system shortcuts that are not delivered to VS Code remain unavailable for capture.
+
 ## 0.1.0
 
 - Add an interactive US QWERTY keyboard with modifier layers, custom-binding accents, candidate details, and chord navigation.
