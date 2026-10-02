@@ -2,8 +2,13 @@
   "name": "vscode-keybindings-visualizer",
   "displayName": "Keybindings Visualizer",
   "description": "Explore default and custom VS Code shortcuts on an interactive keyboard.",
+  "icon": "media/icon.png",
   "version": "0.1.1",
-  "publisher": "keybindings-visualizer",
+  "publisher": "mcmah309",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mcmah309/vscode-keybindings-visualizer.git"
+  },
   "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.96.0"
