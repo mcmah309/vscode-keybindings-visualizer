@@ -1,0 +1,61 @@
+{
+  "name": "vscode-keybindings-visualizer",
+  "displayName": "Keybindings Visualizer",
+  "description": "Explore default and custom VS Code shortcuts on an interactive keyboard.",
+  "version": "0.1.0",
+  "publisher": "keybindings-visualizer",
+  "license": "Apache-2.0",
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "extensionKind": [
+    "ui"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "keybindingsVisualizer.open",
+        "title": "Open",
+        "category": "Keybindings Visualizer"
+      }
+    ],
+    "configuration": {
+      "title": "Keybindings Visualizer",
+      "properties": {
+        "keybindingsVisualizer.keybindingsFile": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "description": "Optional absolute path or URI to a custom keybindings.json. Leave empty to use the selected profile."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "watch": "node scripts/build.mjs --watch",
+    "check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:integration": "node scripts/integration.mjs",
+    "vscode:prepublish": "npm run check && npm run build",
+    "package": "vsce package --allow-missing-repository --out artifacts/keybindings-visualizer.vsix"
+  },
+  "dependencies": {
+    "jsonc-parser": "^3.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "~1.96.0",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.6.0",
+    "esbuild": "^0.25.0",
+    "jsdom": "^26.0.0",
+    "playwright-core": "^1.63.0",
+    "typescript": "^5.8.0",
+    "vitest": "^4.1.11"
+  }
+}

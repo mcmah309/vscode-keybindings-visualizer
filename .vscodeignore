@@ -1,0 +1,17 @@
+.devcontainer/**
+.vscode/**
+.gitignore
+scratch/**
+src/**
+test/**
+scripts/**
+node_modules/**
+artifacts/**
+.cache/**
+.vscode-test/**
+coverage/**
+tsconfig.json
+vitest.config.ts
+package-lock.json
+dist/*.map
+**/*.vsix

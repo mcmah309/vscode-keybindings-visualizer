@@ -16,3 +16,9 @@ target/
 
 
 scratch/
+node_modules/
+dist/
+artifacts/
+.vscode-test/
+.cache/
+coverage/
